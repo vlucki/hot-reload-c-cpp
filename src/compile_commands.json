@@ -1,0 +1,21 @@
+[
+{
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fPIC", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc/dynamic-lib", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/dynamic/linux/x86_64/debug/src/dynamic-lib/game.cpp.o", "src/dynamic-lib/game.cpp"],
+  "file": "src/dynamic-lib/game.cpp"
+},
+{
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/static/linux/x86_64/debug/src/static-lib/greeter.cpp.o", "src/static-lib/greeter.cpp"],
+  "file": "src/static-lib/greeter.cpp"
+},
+{
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/app/linux/x86_64/debug/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+},
+{
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/app/linux/x86_64/debug/src/platforms/platform-linux.cpp.o", "src/platforms/platform-linux.cpp"],
+  "file": "src/platforms/platform-linux.cpp"
+}]
