@@ -1,6 +1,8 @@
 #ifndef PLATFORM_HPP
 #define PLATFORM_HPP
 
+#include <stdio.h>
+
 enum lib_file_state : unsigned char
 {
 	lfs_unknown,
@@ -19,11 +21,9 @@ template <typename funcT>
 bool try_load_func(lib_handle_t handle, char const* const funcName, funcT* outFunc)
 {
 	*outFunc = (funcT)load_func(handle, funcName);
-	if (outFunc == nullptr)
-	{
-		return false;
-	}
-	return true;
+	return *outFunc != nullptr;
 }
+
+void thread_sleep(unsigned long ms);
 
 #endif // PLATFORM_HPP

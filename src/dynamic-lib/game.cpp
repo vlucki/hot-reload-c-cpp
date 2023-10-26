@@ -14,13 +14,14 @@ void load_hello_printer(void(*helloPrinter)())
     s_helloPrinterFunc = helloPrinter;
 }
 
-void update(context* ctx)
+void update(unsigned char* ctx)
 {
+    context* actualCtx = (context*)ctx;
     // Demonstrate a way to keep some values across reloads
     static long long countSinceLastLoad = 0;
     ++countSinceLastLoad;
-    ++(ctx->totalCallCount);
-    printf("\rgame::update (total calls: %lld, calls since last load: %lld): ", ctx->totalCallCount, countSinceLastLoad);
+    ++(actualCtx->totalCallCount);
+    printf("\rgame::update (total calls: %lld, calls since last load: %lld): ", actualCtx->totalCallCount, countSinceLastLoad);
    
     // Demonstrate calling functions provided by the code which loaded the lib
 

@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <sys/stat.h>
 
+// TODO: possibly unify with the one from windows?
 lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath)
 {
 	struct stat file_stat;
@@ -18,17 +19,6 @@ lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelative
 		return lfs_changed;
 	}
 	return lfs_unknown;
-}
-
-void* load_func(void* libHandle, char const* const funcName)
-{
-	void* func = dlsym(libHandle, funcName);
-    char* error = dlerror();
-    if (error != nullptr)
-    {
-        printf("Error loading function \"%s\" from dynamic library:\n\t%s", funcName, error);
-    }
-    return func;
 }
 
 lib_handle_t load_dynamic_library(char const* const libFilePath)
@@ -51,4 +41,20 @@ void unload_dynamic_library(lib_handle_t libHandle)
     {
         printf("Error closing dynamic library handle:\n\t%s", error);
     }
+}
+
+void* load_func(void* libHandle, char const* const funcName)
+{
+	void* func = dlsym(libHandle, funcName);
+    char* error = dlerror();
+    if (error != nullptr)
+    {
+        printf("Error loading function \"%s\" from dynamic library:\n\t%s", funcName, error);
+    }
+    return func;
+}
+
+void thread_sleep(unsigned long ms)
+{
+	sleep(ms);
 }

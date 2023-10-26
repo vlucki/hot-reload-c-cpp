@@ -1,21 +1,19 @@
 #include "platform.hpp"
 
 #include <windows.h>
-
-// TODO_vlucki: review and test all code on a proper Windows machine
+#include <sys/stat.h>
 
 lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath)
 {
-	WIN32_FILE_ATTRIBUTE_DATA fileAttributes;
-	if (GetFileAttributesExA(dynamicLibraryFileRelativePath, GetFileExInfoStandard, &fileAttributes))
+	struct stat file_stat;
+	if (stat(dynamicLibraryFileRelativePath, &file_stat) == 0)
 	{
-		static FILETIME lastDynamicLibraryChangeTime = {0, 0};
-		FILETIME currentFileTime					 = fileAttributes.ftLastWriteTime;
-		if (CompareFileTime(&lastDynamicLibraryChangeTime, &currentFileTime) == 0)
+		static time_t lastDynamicLibraryChangeTime = 0;
+		if (lastDynamicLibraryChangeTime == file_stat.st_mtime)
 		{
 			return lfs_unchanged;
 		}
-		lastDynamicLibraryChangeTime = currentFileTime;
+		lastDynamicLibraryChangeTime = file_stat.st_mtime;
 		return lfs_changed;
 	}
 	return lfs_unknown;
@@ -23,17 +21,70 @@ lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelative
 
 lib_handle_t load_dynamic_library(char const* const libFilePath)
 {
-	lib_handle_t libHandle = LoadLibrary(libFilePath);
+	HMODULE winLibHandle = LoadLibrary(libFilePath);
+
+	DWORD error = GetLastError();
+	if (error)
+	{
+		LPVOID errorMessage;
+		DWORD errorMessageSize = FormatMessageA(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL,
+			error,
+			0,
+			(LPSTR)&errorMessage,
+			0,
+			NULL
+		);
+
+		if (errorMessageSize != 0) {
+			printf("Failed to load DLL: %s\n", (LPSTR)errorMessage);
+			LocalFree(errorMessage);
+		} else {
+			printf("Failed to load DLL with error code: %lu\n", error);
+		}
+	}
+
+	lib_handle_t libHandle = (lib_handle_t)winLibHandle;
 	return libHandle;
 }
 
 void unload_dynamic_library(lib_handle_t libHandle)
 {
-	FreeLibrary(libHandle);
+	HMODULE winLibHandle = (HMODULE)libHandle;
+	FreeLibrary(winLibHandle);
 }
 
 void* load_func(lib_handle_t libHandle, char const* const funcName)
 {
-	void* func = GetProcAddress(libHandle, funcName);
+	HMODULE winLibHandle = (HMODULE)libHandle;
+	FARPROC winFunc = GetProcAddress(winLibHandle, funcName);
+	void* func = (void*)winFunc;
+	if (func == nullptr)
+	{
+		DWORD error = GetLastError();
+		LPVOID errorMessage;
+        DWORD errorMessageSize = FormatMessageA(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL,
+            error,
+            0,
+            (LPSTR)&errorMessage,
+            0,
+            NULL
+        );
+
+		printf("Error loading function \"%s\" with error code: %lu\n", funcName, error);
+        if (errorMessageSize != 0) 
+		{
+            printf("\t%s\n", funcName, (LPSTR)errorMessage);
+            LocalFree(errorMessage);
+        }
+	}
 	return func;
+}
+
+void thread_sleep(unsigned long ms)
+{
+	Sleep(ms);
 }
