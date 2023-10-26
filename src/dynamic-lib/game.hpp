@@ -7,10 +7,6 @@
 #define EXPORT
 #endif
                
-struct context 
-{
-	unsigned long long totalCallCount = 0;
-};
 extern "C"
 {
 	void EXPORT load_name_printer(void (*namePrinter)(char const* const name));

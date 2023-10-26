@@ -20,37 +20,42 @@ enum hot_reload_result : unsigned char
 	hrr_reload_succeeded
 };
 
-// TODO: use this to make a copy of the DLL before loading it
-static int copy_file(char const* const old_filename, char  const* const new_filename)
+static int copy_file(char const* const originalFileName, char  const* const newFileName)
 {
-	FILE  *ptr_old, *ptr_new;
-	errno_t err = 0, err1 = 0;
-	int  a;
+	FILE* originalFile = nullptr;
+	FILE* newFile = nullptr;
+	errno_t errorOpeningOriginalFile = 0;
+	errno_t errorOpeningNewFile = 0;
+	errorOpeningOriginalFile = fopen_s(&originalFile, originalFileName, "rb");
+	errorOpeningNewFile 	 = fopen_s(&newFile, newFileName, "wb");
 
-	err = fopen_s(&ptr_old, old_filename, "rb");
-	err1 = fopen_s(&ptr_new, new_filename, "wb");
-
-	if(err != 0)
-		return  -1;
-
-	if(err1 != 0)
+	if(errorOpeningOriginalFile != 0)
 	{
-		fclose(ptr_old);
 		return  -1;
 	}
 
-	while(1)
+	if(errorOpeningNewFile != 0)
 	{
-		a  =  fgetc(ptr_old);
+		fclose(originalFile);
+		return  -1;
+	}
 
-		if(!feof(ptr_old))
-			fputc(a, ptr_new);
+	while (1)
+	{
+		int dataInOriginalFile = fgetc(originalFile);
+
+		if(!feof(originalFile))
+		{
+			fputc(dataInOriginalFile, newFile);
+		}
 		else
+		{
 			break;
+		}
 	}
 
-	fclose(ptr_new);
-	fclose(ptr_old);
+	fclose(newFile);
+	fclose(originalFile);
 	return  0;
 }
 
@@ -69,8 +74,6 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 	}
 
 
-	// TODO: unfortunately we can't just load the library and be done with it on windows, because it locks the dll
-	// so we must try some other approach. Perhaps renaming it would work? Then we have to delete or something after unloading, assuming the system permits...
 	if (*gameLibHandle != nullptr)
 	{
 		// Slightly larger (0.1s) delay to ensure the file has finished being written

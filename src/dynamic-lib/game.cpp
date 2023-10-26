@@ -14,6 +14,11 @@ void load_hello_printer(void(*helloPrinter)())
     s_helloPrinterFunc = helloPrinter;
 }
 
+struct context 
+{
+	unsigned long long totalCallCount = 0;
+};
+
 void update(unsigned char* ctx)
 {
     context* actualCtx = (context*)ctx;
