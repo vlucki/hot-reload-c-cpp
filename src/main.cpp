@@ -5,6 +5,12 @@
 #include "static-lib/greeter.hpp"
 #include "platform.hpp"
 
+#define LIB_NAME LIB_PREFIX "dynamic"
+#define LIB_COPY_NAME LIB_NAME "-copy"
+
+#define LIB_REL_PATH "./" LIB_NAME LIB_EXTENSION
+#define LIB_COPY_REL_PATH "./" LIB_COPY_NAME LIB_EXTENSION
+
 using updateFuncT = void (*)(unsigned char*);
 
 updateFuncT updateFunc;
@@ -24,10 +30,10 @@ static int copy_file(char const* const originalFileName, char  const* const newF
 {
 	FILE* originalFile = nullptr;
 	FILE* newFile = nullptr;
-	errno_t errorOpeningOriginalFile = 0;
-	errno_t errorOpeningNewFile = 0;
-	errorOpeningOriginalFile = fopen_s(&originalFile, originalFileName, "rb");
-	errorOpeningNewFile 	 = fopen_s(&newFile, newFileName, "wb");
+	file_open_error_t errorOpeningOriginalFile = 0;
+	file_open_error_t errorOpeningNewFile = 0;
+	errorOpeningOriginalFile = open_file(&originalFile, originalFileName, "rb");
+	errorOpeningNewFile 	 = open_file(&newFile, newFileName, "wb");
 
 	if(errorOpeningOriginalFile != 0)
 	{
@@ -120,11 +126,9 @@ int main()
 	unsigned char* persistentMemory = (unsigned char*)malloc(PERSISTENT_MEM_SIZE);
 	memset(persistentMemory, 0, PERSISTENT_MEM_SIZE);
 
-	static char const* const dynamicLibraryFileRelativePath = "./dynamic.dll";
-	static char const* const dynamicLibraryFileCopyRelativePath = "./dynamic-copy.dll";
 	while (true)
 	{
-		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, dynamicLibraryFileRelativePath, dynamicLibraryFileCopyRelativePath);
+		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, LIB_REL_PATH, LIB_COPY_REL_PATH);
 		switch (hotReloadResult)
 		{
 		case hrr_no_reload: {

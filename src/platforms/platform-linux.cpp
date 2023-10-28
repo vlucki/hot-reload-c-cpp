@@ -1,25 +1,9 @@
 #include "platform.hpp"
 
+#include <errno.h>
+#include <unistd.h>
 #include <cstdio>
 #include <dlfcn.h>
-#include <sys/stat.h>
-
-// TODO: possibly unify with the one from windows?
-lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath)
-{
-	struct stat file_stat;
-	if (stat(dynamicLibraryFileRelativePath, &file_stat) == 0)
-	{
-		static __time_t lastDynamicLibraryChangeTime = 0;
-		if (lastDynamicLibraryChangeTime == file_stat.st_mtime)
-		{
-			return lfs_unchanged;
-		}
-		lastDynamicLibraryChangeTime = file_stat.st_mtime;
-		return lfs_changed;
-	}
-	return lfs_unknown;
-}
 
 lib_handle_t load_dynamic_library(char const* const libFilePath)
 {
@@ -56,5 +40,17 @@ void* load_func(void* libHandle, char const* const funcName)
 
 void thread_sleep(unsigned long ms)
 {
-	sleep(ms);
+    usleep(ms * 1000);
+}
+
+unsigned int open_file(FILE** outFile, char const* const fileName, char const* const accessFlags)
+{
+    errno = 0;
+	*outFile = fopen(fileName,accessFlags);
+    if (errno != 0)
+    {
+        printf("Error (%d) opening file \"%s\" with flags \"%s\" ", errno, fileName, accessFlags);
+        outFile = nullptr;
+    }
+    return errno;
 }

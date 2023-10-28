@@ -1,23 +1,6 @@
 #include "platform.hpp"
 
 #include <windows.h>
-#include <sys/stat.h>
-
-lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath)
-{
-	struct stat file_stat;
-	if (stat(dynamicLibraryFileRelativePath, &file_stat) == 0)
-	{
-		static time_t lastDynamicLibraryChangeTime = 0;
-		if (lastDynamicLibraryChangeTime == file_stat.st_mtime)
-		{
-			return lfs_unchanged;
-		}
-		lastDynamicLibraryChangeTime = file_stat.st_mtime;
-		return lfs_changed;
-	}
-	return lfs_unknown;
-}
 
 lib_handle_t load_dynamic_library(char const* const libFilePath)
 {

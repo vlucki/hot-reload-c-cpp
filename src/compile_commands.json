@@ -1,21 +1,26 @@
 [
 {
-  "directory": "C:\\Users\\vluck\\Documents\\hot-reload-c-cpp",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.app.pdb", "/Od", "/std:c++20", "/Isrc", "/DDEBUG", "/EHsc", "/Fobuild\\.objs\\app\\windows\\x64\\debug\\src\\main.cpp.obj", "src\\main.cpp"],
-  "file": "src\\main.cpp"
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc", "-DLINUX", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/app/linux/x86_64/debug/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
 },
 {
-  "directory": "C:\\Users\\vluck\\Documents\\hot-reload-c-cpp",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.app.pdb", "/Od", "/std:c++20", "/Isrc", "/DDEBUG", "/EHsc", "/Fobuild\\.objs\\app\\windows\\x64\\debug\\src\\platforms\\platform-windows.cpp.obj", "src\\platforms\\platform-windows.cpp"],
-  "file": "src\\platforms\\platform-windows.cpp"
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc", "-DLINUX", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/app/linux/x86_64/debug/src/platform.cpp.o", "src/platform.cpp"],
+  "file": "src/platform.cpp"
 },
 {
-  "directory": "C:\\Users\\vluck\\Documents\\hot-reload-c-cpp",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\static.pdb", "/Od", "/std:c++20", "/DDEBUG", "/EHsc", "/Fobuild\\.objs\\static\\windows\\x64\\debug\\src\\static-lib\\greeter.cpp.obj", "src\\static-lib\\greeter.cpp"],
-  "file": "src\\static-lib\\greeter.cpp"
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc", "-DLINUX", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/app/linux/x86_64/debug/src/platforms/platform-linux.cpp.o", "src/platforms/platform-linux.cpp"],
+  "file": "src/platforms/platform-linux.cpp"
 },
 {
-  "directory": "C:\\Users\\vluck\\Documents\\hot-reload-c-cpp",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.dynamic.pdb", "/Od", "/std:c++20", "/Isrc\\dynamic-lib", "/DDEBUG", "/DWINDOWS", "/EHsc", "/Fobuild\\.objs\\dynamic\\windows\\x64\\debug\\src\\dynamic-lib\\game.cpp.obj", "src\\dynamic-lib\\game.cpp"],
-  "file": "src\\dynamic-lib\\game.cpp"
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fPIC", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-Isrc/dynamic-lib", "-DLINUX", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/dynamic/linux/x86_64/debug/src/dynamic-lib/game.cpp.o", "src/dynamic-lib/game.cpp"],
+  "file": "src/dynamic-lib/game.cpp"
+},
+{
+  "directory": "/home/vlucki/Documents/studies/hot-reload-c-cpp",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-g", "-Wall", "-Wextra", "-Weffc++", "-Werror", "-O0", "-std=c++20", "-DLINUX", "-DDEBUG", "-Wduplicated-cond", "-o", "build/.objs/static/linux/x86_64/debug/src/static-lib/greeter.cpp.o", "src/static-lib/greeter.cpp"],
+  "file": "src/static-lib/greeter.cpp"
 }]
