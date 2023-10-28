@@ -1,5 +1,6 @@
 #include "platform.hpp"
 
+#include <stdio.h>
 #include <windows.h>
 
 lib_handle_t load_dynamic_library(char const* const libFilePath)
@@ -60,7 +61,7 @@ void* load_func(lib_handle_t libHandle, char const* const funcName)
 		printf("Error loading function \"%s\" with error code: %lu\n", funcName, error);
         if (errorMessageSize != 0) 
 		{
-            printf("\t%s\n", funcName, (LPSTR)errorMessage);
+            printf("\t%s\n", (LPSTR)errorMessage);
             LocalFree(errorMessage);
         }
 	}
@@ -70,4 +71,10 @@ void* load_func(lib_handle_t libHandle, char const* const funcName)
 void thread_sleep(unsigned long ms)
 {
 	Sleep(ms);
+}
+
+unsigned int open_file(FILE** outFile, char const* const fileName, char const* const accessFlags)
+{
+	errno_t error = fopen_s(outFile, fileName,accessFlags);
+	return error;
 }
