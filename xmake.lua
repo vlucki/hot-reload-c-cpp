@@ -3,7 +3,7 @@ set_languages("c++20")
 set_warnings("everything", "error")
 add_cxxflags("gcc::-Wduplicated-cond")
 add_cxxflags("clang::-Wno-c++98-compat")
--- add_cxxflags("cl::/wd4668 /wd4710 /wd4711 /wd4868")
+add_cxxflags("cl::/wd4668 /wd5039")
 
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "src"})
 
