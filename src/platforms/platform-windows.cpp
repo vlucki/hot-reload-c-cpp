@@ -76,5 +76,5 @@ void thread_sleep(unsigned long ms)
 unsigned int open_file(FILE** outFile, char const* const fileName, char const* const accessFlags)
 {
 	errno_t error = fopen_s(outFile, fileName,accessFlags);
-	return error;
+	return (unsigned int) error;
 }
