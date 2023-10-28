@@ -136,6 +136,7 @@ int main()
 
 			// Very sloppy way to simulat ~60 fps
 			thread_sleep(16);
+			break;
 		}
 		case hrr_reload_succeeded:
 			break;
