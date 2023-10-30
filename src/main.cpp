@@ -5,7 +5,15 @@
 #include "static-lib/greeter.hpp"
 #include "platform.hpp"
 
-#define LIB_NAME LIB_PREFIX "dynamic"
+#define STRINGIFY(x) _STRINGIFY(x)
+#define _STRINGIFY(x) #x
+
+// Fallback if not defined in build script
+#ifndef DYNAMIC_LIB_NAME
+#define DYNAMIC_LIB_NAME dynamic
+#endif
+
+#define LIB_NAME LIB_PREFIX STRINGIFY(DYNAMIC_LIB_NAME)
 #define LIB_COPY_NAME LIB_NAME "-copy"
 
 #define LIB_REL_PATH "./" LIB_NAME LIB_EXTENSION
@@ -128,7 +136,9 @@ int main()
 
 	while (true)
 	{
-		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, LIB_REL_PATH, LIB_COPY_REL_PATH);
+        static char const * const libRelPath = LIB_REL_PATH;
+        static char const * const libCopyRelPath = LIB_COPY_REL_PATH;
+		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, libRelPath, libCopyRelPath);
 		switch (hotReloadResult)
 		{
 		case hrr_no_reload: {

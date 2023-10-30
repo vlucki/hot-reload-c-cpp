@@ -24,7 +24,9 @@ end
 
 set_defaultmode("debug")
 
-target("dynamic")
+local dynLibName = "dynamic"
+
+target(dynLibName)
     set_kind("shared")
     add_includedirs("src/dynamic-lib")
     add_files("src/dynamic-lib/**.cpp")
@@ -37,6 +39,8 @@ target("app")
     set_kind("binary")
     add_deps("static")
     add_includedirs("src")
+    -- Pass on dynLibName to code
+    add_defines("DYNAMIC_LIB_NAME=" .. dynLibName)
     add_files("src/main.cpp", "src/platform.cpp")
     if is_os("windows") then
         add_files("src/platforms/platform-windows.cpp")
