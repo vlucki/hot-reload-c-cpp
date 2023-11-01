@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "static-lib/greeter.hpp"
 #include "platform.hpp"
@@ -19,9 +17,15 @@
 #define LIB_REL_PATH "./" LIB_NAME LIB_EXTENSION
 #define LIB_COPY_REL_PATH "./" LIB_COPY_NAME LIB_EXTENSION
 
-using updateFuncT = void (*)(unsigned char*);
+struct context_t;
 
+using contextInitializationFunctT	= void (*)(context_t** ctx);
+contextInitializationFunctT initContextFunc;
+contextInitializationFunctT deinitContextFunc;
+
+using updateFuncT = void (*)(context_t*);
 updateFuncT updateFunc;
+
 void print_name(char const* const name)
 {
 	printf("%s", name);
@@ -109,7 +113,9 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 		namePrinterFuncT hookUpLocalPrintNameFunction;
 		helloPrinterFuncT hookUpStaticLibSaydHelloFunction;
 
-		if (try_load_func(*gameLibHandle, "update", &updateFunc) &&
+		if (try_load_func(*gameLibHandle, "init_context", &initContextFunc) &&
+			try_load_func(*gameLibHandle, "deinit_context", &deinitContextFunc) &&
+			try_load_func(*gameLibHandle, "update", &updateFunc) &&
 			try_load_func(*gameLibHandle, "load_name_printer", &hookUpLocalPrintNameFunction) &&
 			try_load_func(*gameLibHandle, "load_hello_printer", &hookUpStaticLibSaydHelloFunction))
 		{
@@ -129,10 +135,8 @@ int main()
 {
 	void* dynamicLibraryHandle = nullptr;
 
-#define PERSISTENT_MEM_SIZE 1024
 
-	unsigned char* persistentMemory = (unsigned char*)malloc(PERSISTENT_MEM_SIZE);
-	memset(persistentMemory, 0, PERSISTENT_MEM_SIZE);
+	context_t* persistentMemory = nullptr;
 
 	while (true)
 	{
@@ -149,13 +153,21 @@ int main()
 			break;
 		}
 		case hrr_reload_succeeded:
+			if (persistentMemory == nullptr)
+			{
+				// Allow dynamic lib to define how much memory the context needs, but do it only once so it persists on later reloads
+				initContextFunc(&persistentMemory);
+			}
 			break;
 		case hrr_reload_failed:
 			return 1;
 		}
 	}
 
-	free(persistentMemory);
+	if (persistentMemory && dynamicLibraryHandle)
+	{
+		deinitContextFunc(&persistentMemory);
+	}
 
 	return 0;
 }

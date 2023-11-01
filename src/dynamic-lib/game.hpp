@@ -7,11 +7,18 @@
 #define EXPORT
 #endif
                
+struct context_t
+{
+	unsigned long long totalCallCount = 0;
+};
+
 extern "C"
 {
+	void EXPORT init_context(context_t** ctx);
+	void EXPORT deinit_context(context_t** ctx);
 	void EXPORT load_name_printer(void (*namePrinter)(char const* const name));
 	void EXPORT load_hello_printer(void (*helloPrinter)());
-	void EXPORT update(unsigned char* ctx);
+	void EXPORT update(context_t* ctx);
 }
 
 #endif // GAME_HPP
