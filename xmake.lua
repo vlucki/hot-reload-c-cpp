@@ -1,6 +1,6 @@
 set_languages("c++20")
 
-set_warnings("everything", "error")
+set_warnings("allextra", "error")
 add_cxxflags("gcc::-Wduplicated-cond")
 add_cxxflags("clang::-Wno-c++98-compat")
 add_cxxflags("cl::/wd4668 /wd5039")
