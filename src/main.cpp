@@ -19,16 +19,18 @@
 
 struct context_t;
 
-using contextInitializationFunctT	= void (*)(context_t** ctx);
-contextInitializationFunctT initContextFunc;
-contextInitializationFunctT deinitContextFunc;
+typedef void (*contextInitializationFunctT)(context_t** ctx);
+contextInitializationFunctT init_context;
+contextInitializationFunctT deinit_context;
 
-using updateFuncT = void (*)(context_t*);
-updateFuncT updateFunc;
+typedef void (*updateFuncT)(context_t*);
+updateFuncT update;
 
 void print_name(char const* const name)
 {
-	printf("%s", name);
+	// Append something to name so it is clear the library is not the one doing the printing
+	// and can only affect part of the message
+	printf("dear %s", name);
 }
 
 enum hot_reload_result : unsigned char
@@ -91,7 +93,6 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 		break;
 	}
 
-
 	if (*gameLibHandle != nullptr)
 	{
 		// Slightly larger (0.1s) delay to ensure the file has finished being written
@@ -107,20 +108,20 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 	{
 		printf("Dynamic library successfully loaded\n\n");
 
-		using helloPrinterFuncT = void (*)(void (*)());
-		using namePrinterFuncT	= void (*)(void (*)(char const* const));
+		typedef void (*helloPrinterFuncT)(void (*)());
+		typedef void (*namePrinterFuncT)(void (*)(const char* const));
 
-		namePrinterFuncT hookUpLocalPrintNameFunction;
-		helloPrinterFuncT hookUpStaticLibSaydHelloFunction;
+		namePrinterFuncT load_name_printer;
+		helloPrinterFuncT load_greetings_printer;
 
-		if (try_load_func(*gameLibHandle, "init_context", &initContextFunc) &&
-			try_load_func(*gameLibHandle, "deinit_context", &deinitContextFunc) &&
-			try_load_func(*gameLibHandle, "update", &updateFunc) &&
-			try_load_func(*gameLibHandle, "load_name_printer", &hookUpLocalPrintNameFunction) &&
-			try_load_func(*gameLibHandle, "load_hello_printer", &hookUpStaticLibSaydHelloFunction))
+		if (TRY_LOAD_FUNC(contextInitializationFunctT, *gameLibHandle, init_context) &&
+			TRY_LOAD_FUNC(contextInitializationFunctT, *gameLibHandle, deinit_context) &&
+			TRY_LOAD_FUNC(updateFuncT, *gameLibHandle, update) &&
+			TRY_LOAD_FUNC(namePrinterFuncT, *gameLibHandle, load_name_printer) &&
+			TRY_LOAD_FUNC(helloPrinterFuncT, *gameLibHandle, load_greetings_printer))
 		{
-			hookUpLocalPrintNameFunction(&print_name);
-			hookUpStaticLibSaydHelloFunction(&greet);
+			load_name_printer(&print_name);
+			load_greetings_printer(&greet);
 			return hrr_reload_succeeded;
 		}
 		else
@@ -134,19 +135,18 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 int main()
 {
 	void* dynamicLibraryHandle = nullptr;
-
-
 	context_t* persistentMemory = nullptr;
 
 	while (true)
 	{
         static char const * const libRelPath = LIB_REL_PATH;
         static char const * const libCopyRelPath = LIB_COPY_REL_PATH;
+
 		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, libRelPath, libCopyRelPath);
 		switch (hotReloadResult)
 		{
 		case hrr_no_reload: {
-			updateFunc(persistentMemory);
+			update(persistentMemory);
 
 			// Very sloppy way to simulat ~60 fps
 			thread_sleep(16);
@@ -156,7 +156,7 @@ int main()
 			if (persistentMemory == nullptr)
 			{
 				// Allow dynamic lib to define how much memory the context needs, but do it only once so it persists on later reloads
-				initContextFunc(&persistentMemory);
+				init_context(&persistentMemory);
 			}
 			break;
 		case hrr_reload_failed:
@@ -164,9 +164,10 @@ int main()
 		}
 	}
 
+	// Kinda unnecessary, but left here for the sake of having an example
 	if (persistentMemory && dynamicLibraryHandle)
 	{
-		deinitContextFunc(&persistentMemory);
+		deinit_context(&persistentMemory);
 	}
 
 	return 0;

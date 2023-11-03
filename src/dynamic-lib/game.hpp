@@ -17,7 +17,7 @@ extern "C"
 	void EXPORT init_context(context_t** ctx);
 	void EXPORT deinit_context(context_t** ctx);
 	void EXPORT load_name_printer(void (*namePrinter)(char const* const name));
-	void EXPORT load_hello_printer(void (*helloPrinter)());
+	void EXPORT load_greetings_printer(void (*greetingsPrinter)());
 	void EXPORT update(context_t* ctx);
 }
 

@@ -26,8 +26,8 @@ enum lib_file_state : unsigned char
 	lfs_changed,
 };
 
-using lib_handle_t = void*;
-using file_open_error_t = unsigned int;
+typedef void* lib_handle_t;
+typedef unsigned int file_open_error_t;
 
 file_open_error_t open_file(FILE** outFile, char const* const fileName, char const* const accessFlags);
 lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath);
@@ -37,12 +37,19 @@ void unload_dynamic_library(lib_handle_t libHandle);
 
 void* load_func(lib_handle_t libHandle, char const* const funcName);
 
+#ifdef __cplusplus
 template <typename funcT>
 bool try_load_func(lib_handle_t handle, char const* const funcName, funcT* outFunc)
 {
 	*outFunc = (funcT)load_func(handle, funcName);
 	return *outFunc != nullptr;
 }
+#define TRY_LOAD_FUNC(funcT, handle, func) try_load_func<funcT>(handle, #func, &func)
+#else
+#define TRY_LOAD_FUNC(funcT, handle, func) \
+	((func = (funcT)load_func(handle, #func)) != nullptr)
+#endif
+
 
 void thread_sleep(unsigned long ms);
 

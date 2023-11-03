@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 static void(*s_namePrinterFunc)(char const* const name);
-static void(*s_helloPrinterFunc)();
+static void(*s_greetingsPrinterFunc)();
 
 void init_context(context_t** ctx)
 {
@@ -27,9 +27,9 @@ void load_name_printer(void (*namePrinter)(char const* const name))
     s_namePrinterFunc = namePrinter;
 }
 
-void load_hello_printer(void(*helloPrinter)())
+void load_greetings_printer(void (*greetingsPrinter)())
 {
-    s_helloPrinterFunc = helloPrinter;
+    s_greetingsPrinterFunc = greetingsPrinter;
 }
 
 void update(context_t* ctx)
@@ -42,7 +42,7 @@ void update(context_t* ctx)
    
     // Demonstrate calling functions provided by the code which loaded the lib
 
-    s_helloPrinterFunc();
+    s_greetingsPrinterFunc();
     printf("... ");
     s_namePrinterFunc("World!");
 }
