@@ -9,7 +9,7 @@
                
 struct context_t
 {
-	unsigned long long totalCallCount = 0;
+	unsigned long long totalCallCount;
 };
 
 extern "C"
