@@ -23,7 +23,7 @@ The unloading is fairly simple: just pass the handle to whatever OS function exi
 
 This was required because Windows locks the DLL file until it is unloaded, thus preventing a new one from being created. By making a copy, we free up the original to be overwritten as required.
 
-It may be noted that there are some platform-specific code for the file-related stuff as well. The choice to avoid std::filesystem in favor of a more C-like approach was done precisely to make the code work with C as well as C++.
+It may be noted that there are some platform-specific code for the file-related stuff as well. The choice to avoid std::filesystem in favor of a more C-like approach was done precisely to make the code work with C as well as C++. Same goes for the use of `malloc` and `free` in lieu of `new` and `delete`.
 
 # Possible alternatives
 
@@ -31,7 +31,7 @@ There are ways to have the OS callback into your program notifying whenever a fi
 
 Another option is to await for some explicit user input telling the program to perform the reloading, which would eliminate the need for any file-checking, but I found this to be a bit more tedious than just re-compiling and having it "magically work".
 
-Finally, the whole loop coulde be moved to the library, which would call back into the main application via a function pointer whenever hot-reloading is needed. There's no great reason behind not taking this approach other than the fact it felt a bit easier to do it as presented here, but perhaps one could argue that the entire hot-reloading code is indeed something apart from the "real" application defined by the library and thus should stay out of it.
+Finally, the whole loop could be moved to the library, which would call back into the main application via a function pointer whenever hot-reloading is needed. There's no great reason behind not taking this approach other than the fact it felt a bit easier to do it as presented here, but perhaps one could argue that the entire hot-reloading code is indeed something apart from the "real" application defined by the library and thus should stay out of it.
 
 # Building from source
 
