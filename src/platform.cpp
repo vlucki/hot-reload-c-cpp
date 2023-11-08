@@ -2,7 +2,6 @@
 
 #include <sys/stat.h>
 
-
 lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelativePath)
 {
 	struct stat file_stat;
@@ -18,4 +17,3 @@ lib_file_state check_lib_file_state(char const* const dynamicLibraryFileRelative
 	}
 	return lfs_unknown;
 }
-

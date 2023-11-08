@@ -46,10 +46,8 @@ bool try_load_func(lib_handle_t handle, char const* const funcName, funcT* outFu
 }
 #define TRY_LOAD_FUNC(funcT, handle, func) try_load_func<funcT>(handle, #func, &func)
 #else
-#define TRY_LOAD_FUNC(funcT, handle, func) \
-	((func = (funcT)load_func(handle, #func)) != nullptr)
+#define TRY_LOAD_FUNC(funcT, handle, func) ((func = (funcT)load_func(handle, #func)) != nullptr)
 #endif
-
 
 void thread_sleep(unsigned long ms);
 

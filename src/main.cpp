@@ -40,31 +40,31 @@ enum hot_reload_result : unsigned char
 	hrr_reload_succeeded
 };
 
-static int copy_file(char const* const originalFileName, char  const* const newFileName)
+static int copy_file(char const* const originalFileName, char const* const newFileName)
 {
-	FILE* originalFile = nullptr;
-	FILE* newFile = nullptr;
+	FILE* originalFile						   = nullptr;
+	FILE* newFile							   = nullptr;
 	file_open_error_t errorOpeningOriginalFile = 0;
-	file_open_error_t errorOpeningNewFile = 0;
-	errorOpeningOriginalFile = open_file(&originalFile, originalFileName, "rb");
-	errorOpeningNewFile 	 = open_file(&newFile, newFileName, "wb");
+	file_open_error_t errorOpeningNewFile	   = 0;
+	errorOpeningOriginalFile				   = open_file(&originalFile, originalFileName, "rb");
+	errorOpeningNewFile						   = open_file(&newFile, newFileName, "wb");
 
-	if(errorOpeningOriginalFile != 0)
+	if (errorOpeningOriginalFile != 0)
 	{
-		return  -1;
+		return -1;
 	}
 
-	if(errorOpeningNewFile != 0)
+	if (errorOpeningNewFile != 0)
 	{
 		fclose(originalFile);
-		return  -1;
+		return -1;
 	}
 
 	while (1)
 	{
 		int dataInOriginalFile = fgetc(originalFile);
 
-		if(!feof(originalFile))
+		if (!feof(originalFile))
 		{
 			fputc(dataInOriginalFile, newFile);
 		}
@@ -76,10 +76,12 @@ static int copy_file(char const* const originalFileName, char  const* const newF
 
 	fclose(newFile);
 	fclose(originalFile);
-	return  0;
+	return 0;
 }
 
-static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const dynamicLibraryFileRelativePath, char const* const dynamicLibraryFileCopyRelativePath)
+static hot_reload_result try_hot_reload(void** gameLibHandle,
+										char const* const dynamicLibraryFileRelativePath,
+										char const* const dynamicLibraryFileCopyRelativePath)
 {
 	switch (check_lib_file_state(dynamicLibraryFileRelativePath))
 	{
@@ -134,13 +136,13 @@ static hot_reload_result try_hot_reload(void** gameLibHandle, char const* const 
 
 int main()
 {
-	void* dynamicLibraryHandle = nullptr;
+	void* dynamicLibraryHandle	= nullptr;
 	context_t* persistentMemory = nullptr;
 
 	while (true)
 	{
-        static char const * const libRelPath = LIB_REL_PATH;
-        static char const * const libCopyRelPath = LIB_COPY_REL_PATH;
+		static char const* const libRelPath		= LIB_REL_PATH;
+		static char const* const libCopyRelPath = LIB_COPY_REL_PATH;
 
 		hot_reload_result hotReloadResult = try_hot_reload(&dynamicLibraryHandle, libRelPath, libCopyRelPath);
 		switch (hotReloadResult)
@@ -155,7 +157,8 @@ int main()
 		case hrr_reload_succeeded:
 			if (persistentMemory == nullptr)
 			{
-				// Allow dynamic lib to define how much memory the context needs, but do it only once so it persists on later reloads
+				// Allow dynamic lib to define how much memory the context needs, but do it only once so it persists on
+				// later reloads
 				init_context(&persistentMemory);
 			}
 			break;
